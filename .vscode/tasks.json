@@ -1,0 +1,211 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "windows compile (no-make)",
+            "command": "g++",
+            "args": [
+                "src/main.cpp",
+                "src/Rooms.cpp",
+                "src/Objects.cpp",
+                "src/Structs.cpp",
+                "src/Static.cpp",
+                "-o",
+                "game.exe",
+                "-std=c++11",
+                "-Iraylib/src",
+                "-Lraylib/src",
+                "-lraylib",
+                "-lopengl32",
+                "-lgdi32",
+                "-lwinmm",
+                "-Wl,-subsystem,windows"
+            ],
+            "type": "process",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "linux compile (no-make)",
+            "command": "g++",
+            "args": [
+                "src/main.cpp",
+                "src/Rooms.cpp",
+                "src/Objects.cpp",
+                "src/Static.cpp",
+                "src/Structs.cpp",
+                "-o",
+                "game",
+                "-std=c++11",
+                "-Iraylib/src",
+                "-Lraylib/src",
+                "-lraylib",
+                "-lGL",
+                "-lm",
+                "-lpthread",
+                "-ldl",
+                "-lrt",
+                "-lX11"
+            ],
+            "type": "process",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "osx compile (no-make)",
+            "command": "g++",
+            "args": [
+                "src/main.cpp",
+                "src/Rooms.cpp",
+                "src/Objects.cpp",
+                "src/Static.cpp",
+                "src/Structs.cpp",
+                "-o",
+                "pongpp",
+                "-std=c++11",
+                "-Iraylib/src",
+                "-Lraylib/src",
+                "-lraylib",
+                "-framework",
+                "OpenGL",
+                "-framework",
+                "Cocoa",
+                "-framework",
+                "IOKit",
+                "-framework",
+                "CoreVideo"
+            ],
+            "type": "process",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "windows build (make)",
+            "command": "mingw32-make",
+            "type": "shell",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "isDefault": false,
+                "kind": "build"
+            }
+        },
+        {
+            "label": "windows run (make)",
+            "command": "mingw32-make",
+            "type": "shell",
+            "args": [
+                "run"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "isDefault": false,
+                "kind": "build"
+            }
+        },
+        {
+            "label": "windows clean (make)",
+            "command": "mingw32-make",
+            "type": "shell",
+            "args": [
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "isDefault": false,
+                "kind": "build"
+            }
+        },
+        {
+            "label": "build (make)",
+            "command": "make",
+            "type": "shell",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "isDefault": false,
+                "kind": "build"
+            }
+        },
+        {
+            "label": "run (make)",
+            "command": "make",
+            "type": "shell",
+            "args": [
+                "run"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "isDefault": false,
+                "kind": "build"
+            }
+        },
+        {
+            "label": "clean (make)",
+            "command": "make",
+            "type": "shell",
+            "args": [
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "isDefault": false,
+                "kind": "build"
+            }
+        }
+    ]
+}
