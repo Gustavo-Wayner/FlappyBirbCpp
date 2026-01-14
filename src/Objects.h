@@ -1,6 +1,7 @@
 #pragma once
 
 #include <raylib.h>
+#include "Static.h"
 #include "Structs.h"
 
 class GameObject
@@ -24,9 +25,9 @@ public:
 
     GameObject &operator=(const GameObject &other);
 
-    void Draw()
+    void Draw(float scale = 1, float rotation = 0)
     {
-        DrawTexture(sprite, position.x, position.y, WHITE);
+        DrawTextureEx(sprite, {position.x - sprite.width*0.5f*global::SCALE, position.y - sprite.height*0.5f*global::SCALE}, rotation, scale, WHITE);
     }
 
     Rectangle Hitbox() const
@@ -34,9 +35,9 @@ public:
         return hitbox;
     }
 
-    void DrawOrigin()
+    void DrawOrigin(double size = 3.0)
     {
-        DrawCircle(position.x, position.y, 3.0, BLACK);
+        DrawCircle(position.x, position.y, size, BLACK);
     }
 
     void Update()

@@ -9,10 +9,8 @@ GameObject::GameObject(Vec2 _position, double _width, double _height, Texture2D 
     UpdateHitbox();
 }
 
-GameObject::GameObject(const GameObject &other) : width(other.width), height(other.height), position(other.position)
+GameObject::GameObject(const GameObject &other) : width(other.width), height(other.height), position(other.position), sprite(other.sprite)
 {
-    position = other.position;
-
     velocity = other.velocity;
 
     hitbox = other.hitbox;

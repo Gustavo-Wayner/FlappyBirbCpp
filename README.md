@@ -3,7 +3,8 @@
 
 A small flappy bird clone written in C++ using [raylib](https://www.raylib.com/).  
 
-> Purpose: practicing C++, game architecture, and cross-platform builds.
+> Purpose: practicing C++, game architecture, cross-platform builds but mainly, game optimization.  
+in my python flappy bird clone, i have multiple inoptimal operations like reloading textures every frame and recreating my text font every frame. Here, i'll apply concepts of optimization such as pre-loadig textures and applying scale before entering the loop
 
 ## 📦 Dependencies
 

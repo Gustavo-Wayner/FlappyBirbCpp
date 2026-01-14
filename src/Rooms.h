@@ -2,11 +2,27 @@
 
 #include <ctime>
 #include <cstdlib>
+#include <vector>
 
 #include "Objects.h"
 #include "Static.h"
 
 bool collide(const GameObject &a, const GameObject &b);
+
+class Pipes
+{
+public:
+    int offset = 220;
+    Vec2 position;
+    Vec2 velocity;
+    GameObject top_pipe;
+    GameObject bottom_pipe;
+
+    Pipes(Vec2 _position);
+    void Draw(float scale = 1);
+    void DrawOrigin();
+    void Update();
+};
 
 enum State
 {
@@ -47,10 +63,12 @@ struct MainMenu : public Room
 
 struct Game : public Room
 {
+    float scale;
     int score;
     GameObject birb;
     float gravity;
     float jump;
+    std::vector<Pipes> pipes;
 
     Game();
 
