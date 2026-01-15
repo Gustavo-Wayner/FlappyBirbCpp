@@ -13,20 +13,28 @@
                 "-o",
                 "game.exe",
                 "-std=c++11",
-                "-Iraylib/src",
-                "-Lraylib/src",
+
+                "-Ithird_party/raylib/src",
+                "-Ithird_party/raylib/src/external",
+                "-Ithird_party/lua/src",
+
+                "-Lthird_party/raylib/src",
+                "-Lthird_party/lua/lib",
+
                 "-lraylib",
+                "-llua",
+
                 "-lopengl32",
                 "-lgdi32",
                 "-lwinmm",
+
                 "-Wl,-subsystem,windows"
             ],
             "type": "process",
-            "problemMatcher": [
-                "$gcc"
-            ],
+            "problemMatcher": ["$gcc"],
             "group": "build"
         },
+
         {
             "label": "linux compile (no-make)",
             "command": "g++",
@@ -39,9 +47,17 @@
                 "-o",
                 "game",
                 "-std=c++11",
-                "-Iraylib/src",
-                "-Lraylib/src",
+
+                "-Ithird_party/raylib/src",
+                "-Ithird_party/raylib/src/external",
+                "-Ithird_party/lua/src",
+
+                "-Lthird_party/raylib/src",
+                "-Lthird_party/lua/lib",
+
                 "-lraylib",
+                "-llua",
+
                 "-lGL",
                 "-lm",
                 "-lpthread",
@@ -50,9 +66,7 @@
                 "-lX11"
             ],
             "type": "process",
-            "problemMatcher": [
-                "$gcc"
-            ],
+            "problemMatcher": ["$gcc"],
             "group": "build"
         },
         {
@@ -61,28 +75,31 @@
             "args": [
                 "src/main.cpp",
                 "src/Rooms.cpp",
+                "src/Rooms.cpp",
                 "src/Objects.cpp",
                 "src/Static.cpp",
                 "src/Structs.cpp",
                 "-o",
-                "pongpp",
+                "game",
                 "-std=c++11",
-                "-Iraylib/src",
-                "-Lraylib/src",
+
+                "-Ithird_party/raylib/src",
+                "-Ithird_party/raylib/src/external",
+                "-Ithird_party/lua/src",
+
+                "-Lthird_party/raylib/src",
+                "-Lthird_party/lua/lib",
+
                 "-lraylib",
-                "-framework",
-                "OpenGL",
-                "-framework",
-                "Cocoa",
-                "-framework",
-                "IOKit",
-                "-framework",
-                "CoreVideo"
+                "-llua",
+
+                "-framework", "OpenGL",
+                "-framework", "Cocoa",
+                "-framework", "IOKit",
+                "-framework", "CoreVideo"
             ],
             "type": "process",
-            "problemMatcher": [
-                "$gcc"
-            ],
+            "problemMatcher": ["$gcc"],
             "group": "build"
         },
         {

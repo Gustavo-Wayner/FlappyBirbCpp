@@ -4,8 +4,9 @@
       "name": "Win32",
       "includePath": [
         "${workspaceFolder}/**",
-        "${workspaceFolder}/raylib/src",
-        "${workspaceFolder}/raylib/src/external"
+        "${workspaceFolder}/third_party/raylib/src",
+        "${workspaceFolder}/third_party/raylib/src/external",
+        "${workspaceFolder}/third_party/lua/src"
       ],
       "defines": ["PLATFORM_WINDOWS"],
       "compilerPath": "C:/msys64/ucrt64/bin/g++.exe",

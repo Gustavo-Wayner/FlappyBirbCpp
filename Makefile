@@ -14,19 +14,39 @@ OBJS := $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
 CXX ?= g++
 
-# Raylib (inside the repo)
-RAYLIB_INC     := raylib/src
-RAYLIB_EXT     := raylib/src/external
-RAYLIB_LIB_DIR := raylib/src
+# ===========================
+# Third-party libs
+# ===========================
 
-CXXFLAGS := -std=c++11 -Wall -Wextra -O2 -I$(RAYLIB_INC) -I$(RAYLIB_EXT) -Wno-missing-field-initializers -Wno-unused-parameter
+# Raylib
+RAYLIB_DIR     := third_party/raylib
+RAYLIB_INC     := $(RAYLIB_DIR)/src
+RAYLIB_EXT     := $(RAYLIB_DIR)/src/external
+RAYLIB_LIB_DIR := $(RAYLIB_DIR)/src
+
+# Lua (static)
+LUA_DIR     := third_party/lua
+LUA_INC     := $(LUA_DIR)/include
+LUA_LIB_DIR := $(LUA_DIR)/lib
+
+# ===========================
+# Compiler flags
+# ===========================
+CXXFLAGS := -std=c++11 -Wall -Wextra -O2 \
+	-I$(RAYLIB_INC) -I$(RAYLIB_EXT) \
+	-I$(LUA_INC) \
+	-Wno-missing-field-initializers -Wno-unused-parameter
 
 # ===========================
 # Platform / commands
 # ===========================
 ifeq ($(OS),Windows_NT)
+    ifneq ($(MSYSTEM),)
+        PLATFORM := WINDOWS_MSYS
+    else
+        PLATFORM := WINDOWS_CMD
+    endif
     PLATFORM := WINDOWS
-    SHELL := cmd.exe
     MKDIR  = if not exist "$(dir $@)" mkdir "$(dir $@)"
     RMDIR  = rmdir /S /Q
 else
@@ -48,35 +68,23 @@ endif
 
 TARGET := $(BUILD_DIR)/$(TARGET_NAME)$(EXE_EXT)
 
-ifeq ($(PLATFORM),WINDOWS)
-    ASSETS_CMD = \
-        -@$(RMDIR) "$(ASSETS_DST)" && \
-        if not exist "$(BUILD_DIR)" mkdir "$(BUILD_DIR)" && \
-        if not exist "$(ASSETS_DST)" mkdir "$(ASSETS_DST)" && \
-        xcopy /E /I /Y "$(ASSETS_SRC)\*" "$(ASSETS_DST)\"
-else
-    ASSETS_CMD = \
-        -@$(RMDIR) "$(ASSETS_DST)" && \
-        mkdir -p "$(ASSETS_DST)" && \
-        cp -r "$(ASSETS_SRC)/." "$(ASSETS_DST)/"
-endif
-
 # ===========================
 # Linking
 # ===========================
-LDFLAGS := -L$(RAYLIB_LIB_DIR)
+LDFLAGS := -L$(RAYLIB_LIB_DIR) -L$(LUA_LIB_DIR)
 
 ifeq ($(PLATFORM),WINDOWS)
-    LDLIBS := -lraylib -lopengl32 -lgdi32 -lwinmm
-    SUBSYSTEM=-Wl,-subsystem,windows
+    LDLIBS := -lraylib -llua -lopengl32 -lgdi32 -lwinmm
+    SUBSYSTEM := -Wl,-subsystem,windows
 endif
 
 ifeq ($(PLATFORM),LINUX)
-    LDLIBS := -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+    LDLIBS := -lraylib -llua -lGL -lm -lpthread -ldl -lrt -lX11
 endif
 
 ifeq ($(PLATFORM),MACOS)
-    LDLIBS := -lraylib -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
+    LDLIBS := -lraylib -llua \
+        -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
 endif
 
 # ===========================
@@ -84,15 +92,12 @@ endif
 # ===========================
 .PHONY: all run clean assets
 
-
 all: assets $(TARGET)
 
-# Links in build/game(.exe)
 $(TARGET): $(OBJS)
 	@$(MKDIR)
 	$(CXX) $(OBJS) -o $@ $(LDFLAGS) $(LDLIBS) $(SUBSYSTEM)
 
-# Compiles any .cpp from src/ to build/
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@$(MKDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -103,7 +108,9 @@ run: assets $(TARGET)
 clean:
 	-@$(RMDIR) "$(BUILD_DIR)"
 
-
+# ===========================
+# Assets
+# ===========================
 ifeq ($(PLATFORM),WINDOWS)
 assets:
 	-@$(RMDIR) "$(ASSETS_DST)"

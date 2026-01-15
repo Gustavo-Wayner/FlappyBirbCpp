@@ -1,6 +1,7 @@
 #include "Rooms.h"
 
 #include <raylib.h>
+#include <lua.hpp>
 
 #define RAYGUI_IMPLEMENTATION
 #include <raygui.h>

@@ -1,9 +1,10 @@
 ***ATENTION*: I only have access to Windows and therefore am unable to confirm if my Makefile works on linux/mac. Feedback and fixes/tips from linux/mac users would be very much apreciated**
 # 🎮 FlappyBirbCpp
 
-A small flappy bird clone written in C++ using [raylib](https://www.raylib.com/).  
+A small flappy bird clone written in C++ using [raylib](https://www.raylib.com/) and [Lua](https://www.lua.org/download.html).  
 
 > Purpose: practicing C++, game architecture, cross-platform builds but mainly, game optimization.  
+
 in my python flappy bird clone, i have multiple inoptimal operations like reloading textures every frame and recreating my text font every frame. Here, i'll apply concepts of optimization such as pre-loadig textures and applying scale before entering the loop
 
 ## 📦 Dependencies
@@ -12,6 +13,7 @@ Required tools:
 
 - **C++11** or newer
 - **GNU make**
+- **Lua libs** (included with the project)
 - **raylib** (included with the project)
 - **gcc / clang / mingw-w64**
 
@@ -127,6 +129,8 @@ FlappyBirbCpp/
  │   ├── Objects.cpp / .h  
  |   ├── Static.cpp / .h  
  │   └── Structs.cpp / .h  
- ├── raylib/ ← bundled raylib source  
+ ├── third_party  
+ │   ├── raylib/ ← bundled raylib source  
+ │   └── lua/ / ← bundled lua source  
  ├── Makefile  
  └── README.md
