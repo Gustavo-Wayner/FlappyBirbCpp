@@ -11,15 +11,14 @@ public:
     Rectangle hitbox = {0, 0, 0, 0};
 
     GameObject() = default;
-    double width, height;
     Vec2 velocity;
     Texture2D sprite;
 
-    GameObject(Vec2 _position, double _width, double _height, Texture2D _sprite);
+    GameObject(Vec2 _position, Rectangle _hitbox, Texture2D _sprite);
 
     GameObject(const GameObject &other);
 
-    void UpdateHitbox();
+    void UpdateHitbox(const float& offsetX = 0.0f, const float& offsetY = 0.0f);
     Vec2 getPosition();
     GameObject getNext();
 
@@ -30,19 +29,18 @@ public:
         DrawTextureEx(sprite, {position.x - sprite.width*0.5f*global::SCALE, position.y - sprite.height*0.5f*global::SCALE}, rotation, scale, WHITE);
     }
 
-    Rectangle Hitbox() const
-    {
-        return hitbox;
-    }
-
     void DrawOrigin(double size = 3.0)
     {
         DrawCircle(position.x, position.y, size, BLACK);
     }
-
-    void Update()
+    void DrawHb()
     {
+        DrawRectangleLines(hitbox.x, hitbox.y, hitbox.width, hitbox.height, BLACK);
+    }
+
+    void Update(const float& offsetX = 0.0f, const float& offsetY = 0.0f)
+    {
+        UpdateHitbox(offsetX, offsetY);
         position += velocity;
-        UpdateHitbox();
     }
 };

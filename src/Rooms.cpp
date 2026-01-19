@@ -1,7 +1,6 @@
 #include "Rooms.h"
 
 #include <raylib.h>
-#include <lua.hpp>
 
 #define RAYGUI_IMPLEMENTATION
 #include <raygui.h>
@@ -9,10 +8,10 @@
 using namespace global;
 
 #pragma region Pipes
-Pipes::Pipes(Vec2 _position) : position(_position), offset(220)
+Pipes::Pipes(Vec2 _position) : position(_position), offset(253)
 {    
-    top_pipe = GameObject({position.x, position.y + offset}, 533, 2186, LoadTexture("assets/pipe.png"));
-    bottom_pipe = GameObject({position.x, position.y - offset}, 533, 2186, LoadTexture("assets/pipe.png"));
+    top_pipe = GameObject(Vec2{position.x, position.y + offset}, {position.x, position.y + offset, 533*SCALE, 2186*SCALE}, LoadTexture("assets/pipe.png"));
+    bottom_pipe = GameObject(Vec2{position.x, position.y - offset}, {position.x, position.y - offset, 533*SCALE, 2186*SCALE}, LoadTexture("assets/pipe.png"));
 
     velocity = {0, 0};
 }
@@ -39,14 +38,20 @@ void Pipes::DrawOrigin()
     bottom_pipe.DrawOrigin(3.0);
 }
 
+void Pipes::DrawHbs()
+{
+    top_pipe.DrawHb();
+    bottom_pipe.DrawHb();
+}
+
 #pragma endregion
 
 #pragma region RoomManager
 
 bool collide(const GameObject &a, const GameObject &b)
 {
-    Rectangle aHitbox = a.Hitbox();
-    Rectangle bHitbox = b.Hitbox();
+    Rectangle aHitbox = a.hitbox;
+    Rectangle bHitbox = b.hitbox;
 
     return CheckCollisionRecs(aHitbox, bHitbox);
 }
@@ -87,7 +92,7 @@ void MainMenu::Step()
 
 #pragma region Game
 
-Game::Game() : birb(Vec2{0, 0}, 0, 0, LoadTexture("assets/birb.png")){}
+Game::Game() : birb(Vec2{0, 0}, {0, 0, 0, 0}, LoadTexture("assets/birb.png")){}
 
 void Game::Setup()
 {
@@ -100,13 +105,12 @@ void Game::Setup()
     camera.target = {0.0f, 0.0f};
     camera.zoom = 1.0f;
 
-    pipes.push_back(Pipes({0, 0}));
-
+    timer = 0;
     scale = SCALE;
     jump = -10.0f;
     gravity = 0.5f;
 
-    birb = GameObject(Vec2{-200, -90}, 40, 40, LoadTexture("assets/birb.png"));
+    birb = GameObject(Vec2{-200, -90}, Rectangle{-200, -800, 50, 50}, LoadTexture("assets/birb.png"));
     birb.velocity = {0, 0};
 
     state = State::Unpaused;
@@ -120,18 +124,35 @@ void Game::Step()
     switch (state)
     {
     case State::Unpaused:
-        ClearBackground(BackgroundColor);
-        birb.velocity.y += gravity;
-        if(IsKeyPressed(KEY_SPACE)) birb.velocity.y = jump;
+        {
+            ClearBackground(BackgroundColor);
+            birb.velocity.y += gravity;
+            if(IsKeyPressed(KEY_SPACE)) birb.velocity.y = jump;
 
-        birb.Update();
-        birb.Draw(scale);
-        pipes[0].Draw(scale);
- 
-        EndMode2D();
-        DrawText(TextFormat("%d\n", score), 450, 10, 21, BLACK);
-        BeginMode2D(camera);
-        break;
+            birb.Update(-1.0f, 6.0f);
+            birb.Draw(scale); 
+            birb.DrawHb();
+
+            for(Pipes p : pipes)
+            {
+                p.velocity = {-2, 0};
+                p.Update();
+                p.Draw(scale);
+            }
+    
+            EndMode2D();
+            DrawText(TextFormat("%d\n", score), 450, 10, 21, BLACK);
+            BeginMode2D(camera);
+            timer += 1;
+
+            if(timer >= 10) 
+            {
+                pipes.push_back(Pipes({800, 0}));
+                timer = 0;
+            }
+
+            break;
+        }
 
     case State::Paused:
         ClearBackground(BackgroundColor);

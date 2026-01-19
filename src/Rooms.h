@@ -12,7 +12,7 @@ bool collide(const GameObject &a, const GameObject &b);
 class Pipes
 {
 public:
-    int offset = 220;
+    int offset = 253;
     Vec2 position;
     Vec2 velocity;
     GameObject top_pipe;
@@ -21,6 +21,7 @@ public:
     Pipes(Vec2 _position);
     void Draw(float scale = 1);
     void DrawOrigin();
+    void DrawHbs();
     void Update();
 };
 
@@ -36,6 +37,7 @@ struct Room
     bool pressedPause = false;
     State state = State::Unpaused;
     Color BackgroundColor;
+    int timer;
     virtual void Setup() {}
     virtual void Step() {}
 };
