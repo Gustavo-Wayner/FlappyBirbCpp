@@ -1,7 +1,7 @@
 ***ATENTION*: I only have access to Windows and therefore am unable to confirm if my Makefile works on linux/mac. Feedback and fixes/tips from linux/mac users would be very much apreciated**
 # 🎮 FlappyBirbCpp
 
-A small flappy bird clone written in C++ using [raylib](https://www.raylib.com/) and [Lua](https://www.lua.org/download.html).  
+A small flappy bird clone written in C++ using [raylib](https://www.raylib.com/)  
 
 > Purpose: practicing C++, game architecture, cross-platform builds but mainly, game optimization.  
 
@@ -129,8 +129,6 @@ FlappyBirbCpp/
  │   ├── Objects.cpp / .h  
  |   ├── Static.cpp / .h  
  │   └── Structs.cpp / .h  
- ├── third_party  
- │   ├── raylib/ ← bundled raylib source  
- │   └── lua/ / ← bundled lua source  
+ ├── raylib/ ← bundled raylib source  
  ├── Makefile  
  └── README.md

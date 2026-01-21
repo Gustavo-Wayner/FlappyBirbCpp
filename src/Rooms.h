@@ -28,13 +28,13 @@ public:
 enum State
 {
     Unpaused,
-    Paused
+    Paused,
+    GameOver
 };
 
 struct Room
 {
     Camera2D camera = {0};
-    bool pressedPause = false;
     State state = State::Unpaused;
     Color BackgroundColor;
     int timer;
@@ -65,7 +65,6 @@ struct MainMenu : public Room
 
 struct Game : public Room
 {
-    float scale;
     int score;
     GameObject birb;
     float gravity;

@@ -14,27 +14,17 @@ OBJS := $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
 CXX ?= g++
 
-# ===========================
-# Third-party libs
-# ===========================
-
 # Raylib
-RAYLIB_DIR     := third_party/raylib
+RAYLIB_DIR     := raylib
 RAYLIB_INC     := $(RAYLIB_DIR)/src
 RAYLIB_EXT     := $(RAYLIB_DIR)/src/external
 RAYLIB_LIB_DIR := $(RAYLIB_DIR)/src
-
-# Lua (static)
-LUA_DIR     := third_party/lua
-LUA_INC     := $(LUA_DIR)/include
-LUA_LIB_DIR := $(LUA_DIR)/lib
 
 # ===========================
 # Compiler flags
 # ===========================
 CXXFLAGS := -std=c++11 -Wall -Wextra -O2 \
 	-I$(RAYLIB_INC) -I$(RAYLIB_EXT) \
-	-I$(LUA_INC) \
 	-Wno-missing-field-initializers -Wno-unused-parameter
 
 # ===========================
@@ -71,19 +61,19 @@ TARGET := $(BUILD_DIR)/$(TARGET_NAME)$(EXE_EXT)
 # ===========================
 # Linking
 # ===========================
-LDFLAGS := -L$(RAYLIB_LIB_DIR) -L$(LUA_LIB_DIR)
+LDFLAGS := -L$(RAYLIB_LIB_DIR)
 
 ifeq ($(PLATFORM),WINDOWS)
-    LDLIBS := -lraylib -llua -lopengl32 -lgdi32 -lwinmm
+    LDLIBS := -lraylib -lopengl32 -lgdi32 -lwinmm
     SUBSYSTEM := -Wl,-subsystem,windows
 endif
 
 ifeq ($(PLATFORM),LINUX)
-    LDLIBS := -lraylib -llua -lGL -lm -lpthread -ldl -lrt -lX11
+    LDLIBS := -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 endif
 
 ifeq ($(PLATFORM),MACOS)
-    LDLIBS := -lraylib -llua \
+    LDLIBS := -lraylib \
         -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
 endif
 

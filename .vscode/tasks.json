@@ -14,15 +14,11 @@
                 "game.exe",
                 "-std=c++11",
 
-                "-Ithird_party/raylib/src",
-                "-Ithird_party/raylib/src/external",
-                "-Ithird_party/lua/src",
+                "-Iraylib/src",
+                "-Iraylib/src/external",
 
-                "-Lthird_party/raylib/src",
-                "-Lthird_party/lua/lib",
-
+                "-Lraylib/src",
                 "-lraylib",
-                "-llua",
 
                 "-lopengl32",
                 "-lgdi32",

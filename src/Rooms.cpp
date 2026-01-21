@@ -8,10 +8,10 @@
 using namespace global;
 
 #pragma region Pipes
-Pipes::Pipes(Vec2 _position) : position(_position), offset(253)
+Pipes::Pipes(Vec2 _position) : position(_position), offset(275)
 {    
-    top_pipe = GameObject(Vec2{position.x, position.y + offset}, {position.x, position.y + offset, 533*SCALE, 2186*SCALE}, LoadTexture("assets/pipe.png"));
-    bottom_pipe = GameObject(Vec2{position.x, position.y - offset}, {position.x, position.y - offset, 533*SCALE, 2186*SCALE}, LoadTexture("assets/pipe.png"));
+    top_pipe = GameObject(Vec2{position.x, position.y - offset}, {position.x, position.y + offset, 533*SCALE, 2186*SCALE}, LoadTexture("assets/pipe.png"));
+    bottom_pipe = GameObject(Vec2{position.x, position.y + offset}, {position.x, position.y - offset, 533*SCALE, 2186*SCALE}, LoadTexture("assets/pipe.png"));
 
     velocity = {0, 0};
 }
@@ -19,7 +19,8 @@ Pipes::Pipes(Vec2 _position) : position(_position), offset(253)
 void Pipes::Update()
 {
     position += velocity;
-    bottom_pipe.velocity = top_pipe.velocity = velocity;
+    bottom_pipe.velocity = velocity;
+    top_pipe.velocity = velocity;
 
     bottom_pipe.Update();
     top_pipe.Update();
@@ -28,7 +29,26 @@ void Pipes::Update()
 void Pipes::Draw(float scale)
 {
     top_pipe.Draw(scale);
-    bottom_pipe.Draw(scale);
+    DrawTexturePro(
+        bottom_pipe.sprite,
+        {
+            0, 0,
+            (float)bottom_pipe.sprite.width,
+            (float)-bottom_pipe.sprite.height
+        },
+        {
+            bottom_pipe.position.x,
+            bottom_pipe.position.y,
+            bottom_pipe.sprite.width * scale,
+            bottom_pipe.sprite.height * scale
+        },
+        {
+            bottom_pipe.sprite.width * scale * 0.5f,
+            bottom_pipe.sprite.height * scale * 0.5f
+        },
+        0,
+        WHITE
+    );
 }
 
 void Pipes::DrawOrigin()
@@ -94,6 +114,7 @@ void MainMenu::Step()
 
 Game::Game() : birb(Vec2{0, 0}, {0, 0, 0, 0}, LoadTexture("assets/birb.png")){}
 
+    #pragma region Setup
 void Game::Setup()
 {
     GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
@@ -105,17 +126,19 @@ void Game::Setup()
     camera.target = {0.0f, 0.0f};
     camera.zoom = 1.0f;
 
-    timer = 0;
-    scale = SCALE;
+    timer = 0.0f;
     jump = -10.0f;
     gravity = 0.5f;
 
     birb = GameObject(Vec2{-200, -90}, Rectangle{-200, -800, 50, 50}, LoadTexture("assets/birb.png"));
     birb.velocity = {0, 0};
 
+    pipes.clear();
     state = State::Unpaused;
 }
+    #pragma endregion
 
+    #pragma region Step
 void Game::Step()
 {
     bool switchRooms = false;
@@ -125,29 +148,31 @@ void Game::Step()
     {
     case State::Unpaused:
         {
+            if (IsKeyPressed(KEY_ESCAPE)) state = State::Paused;
             ClearBackground(BackgroundColor);
             birb.velocity.y += gravity;
             if(IsKeyPressed(KEY_SPACE)) birb.velocity.y = jump;
 
             birb.Update(-1.0f, 6.0f);
-            birb.Draw(scale); 
-            birb.DrawHb();
-
-            for(Pipes p : pipes)
+            
+            for(int i = pipes.size() - 1; i >= 0; i--)
             {
-                p.velocity = {-2, 0};
-                p.Update();
-                p.Draw(scale);
+                pipes[i].Update();
+                pipes[i].Draw(SCALE);
+                if (collide(birb, pipes[i].top_pipe) || collide(birb, pipes[i].bottom_pipe)) state = State::GameOver;
+                if (pipes[i].position.x < -430) pipes.erase(pipes.begin() + i);
             }
+            birb.Draw(SCALE);
     
             EndMode2D();
             DrawText(TextFormat("%d\n", score), 450, 10, 21, BLACK);
             BeginMode2D(camera);
             timer += 1;
 
-            if(timer >= 10) 
+            if(timer >= 50) 
             {
-                pipes.push_back(Pipes({800, 0}));
+                pipes.push_back(Pipes(Vec2{ 800.0f, (float)GetRandomValue(-132, 132) }));
+                pipes[pipes.size() - 1].velocity = {-8, 0};
                 timer = 0;
             }
 
@@ -155,46 +180,41 @@ void Game::Step()
         }
 
     case State::Paused:
+        if (IsKeyPressed(KEY_ESCAPE)) state = State::Unpaused;
         ClearBackground(BackgroundColor);
-        pipes[0].Draw(scale);
-        birb.Draw(scale);
+        for(Pipes& p : pipes) p.Draw(SCALE);
+        birb.Draw(SCALE);
         EndMode2D();
 
         DrawText(TextFormat("%d\n", score), 450, 10, 21, BLACK);
 
-        if (GuiButton({GetScreenWidth() * 0.5f - 120, GetScreenHeight() * 0.5f - 30 - 50, 240, 60}, "Resume"))
+        if (GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f - 30 - 50, 240, 60}, "Resume"))
         {
             state = State::Unpaused;
         }
-        if (GuiButton({GetScreenWidth() * 0.5f - 120, GetScreenHeight() * 0.5f - 30 + 50, 240, 60}, "Return to main menu"))
+        if (GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f - 30 + 50, 240, 60}, "Return to main menu"))
             switchRooms = true;
             BeginMode2D(camera);
+        break;
+
+    case State::GameOver:
+        if (IsKeyPressed(KEY_ESCAPE)) manager.current->Setup();
+        ClearBackground(BackgroundColor);
+        for(Pipes& p : pipes) p.Draw(SCALE);
+        birb.Draw(SCALE);
+        EndMode2D();
+
+        if(GuiButton({ScreenWidth  * 0.5f - 120, ScreenHeight * 0.5f - 30 - 50, 240, 60}, "Restart")) manager.current->Setup();
+        if (GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f - 30 + 50, 240, 60}, "Return to main menu"))
+        {
+            switchRooms = true;
+        }
+        BeginMode2D(camera);
         break;
     }
 
     EndMode2D();
     EndDrawing();
-
-    if (IsKeyDown(KEY_ESCAPE))
-    {
-        if (!pressedPause)
-        {
-            switch (state)
-            {
-            case State::Unpaused:
-                state = State::Paused;
-                break;
-            case State::Paused:
-                state = State::Unpaused;
-                break;
-            }
-        }
-        pressedPause = true;
-    }
-    else
-    {
-        pressedPause = false;
-    }
 
     if (switchRooms)
     {
@@ -202,4 +222,5 @@ void Game::Step()
         manager.SwitchTo<MainMenu>();
     }
 }
+    #pragma endregion
 #pragma endregion
