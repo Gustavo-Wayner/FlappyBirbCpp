@@ -12,11 +12,12 @@ bool collide(const GameObject &a, const GameObject &b);
 class Pipes
 {
 public:
-    int offset = 253;
+    int offset = 275;
     Vec2 position;
     Vec2 velocity;
     GameObject top_pipe;
     GameObject bottom_pipe;
+    bool beenPassed = false;
 
     Pipes(Vec2 _position);
     void Draw(float scale = 1);

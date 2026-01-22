@@ -8,7 +8,7 @@
 using namespace global;
 
 #pragma region Pipes
-Pipes::Pipes(Vec2 _position) : position(_position), offset(275)
+Pipes::Pipes(Vec2 _position) : position(_position)
 {    
     top_pipe = GameObject(Vec2{position.x, position.y - offset}, {position.x, position.y + offset, 533*SCALE, 2186*SCALE}, LoadTexture("assets/pipe.png"));
     bottom_pipe = GameObject(Vec2{position.x, position.y + offset}, {position.x, position.y - offset, 533*SCALE, 2186*SCALE}, LoadTexture("assets/pipe.png"));
@@ -114,7 +114,7 @@ void MainMenu::Step()
 
 Game::Game() : birb(Vec2{0, 0}, {0, 0, 0, 0}, LoadTexture("assets/birb.png")){}
 
-    #pragma region Setup
+    #pragma region Game - Setup
 void Game::Setup()
 {
     GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
@@ -129,6 +129,7 @@ void Game::Setup()
     timer = 0.0f;
     jump = -10.0f;
     gravity = 0.5f;
+    score = 0;
 
     birb = GameObject(Vec2{-200, -90}, Rectangle{-200, -800, 50, 50}, LoadTexture("assets/birb.png"));
     birb.velocity = {0, 0};
@@ -138,7 +139,7 @@ void Game::Setup()
 }
     #pragma endregion
 
-    #pragma region Step
+    #pragma region Game - Step
 void Game::Step()
 {
     bool switchRooms = false;
@@ -160,8 +161,19 @@ void Game::Step()
                 pipes[i].Update();
                 pipes[i].Draw(SCALE);
                 if (collide(birb, pipes[i].top_pipe) || collide(birb, pipes[i].bottom_pipe)) state = State::GameOver;
-                if (pipes[i].position.x < -430) pipes.erase(pipes.begin() + i);
+                if (pipes[i].position.x + pipes[i].top_pipe.sprite.width*SCALE*0.5f + 2 < birb.position.x)
+                {
+                    if (!pipes[i].beenPassed)
+                    {
+                        pipes[i].beenPassed = true;
+                        score++;
+                    }
+                    if (pipes[i].position.x < -430) pipes.erase(pipes.begin() + i);
+                }
             }
+
+            if(birb.position.y * sign(birb.position.y) > ScreenHeight*0.5f + 30) state = State::GameOver;
+
             birb.Draw(SCALE);
     
             EndMode2D();
