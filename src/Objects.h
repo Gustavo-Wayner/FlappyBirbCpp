@@ -7,6 +7,7 @@
 class GameObject
 {
 public:
+    Vector2 origin;
     Vec2 position = {0.0f, 0.0f};
     Rectangle hitbox = {0, 0, 0, 0};
 
@@ -24,10 +25,32 @@ public:
 
     GameObject &operator=(const GameObject &other);
 
-    void Draw(float scale = 1, float rotation = 0)
+    void Draw(float scale = 1.0f, float rotation = 0.0f, bool flipX = false, bool flipY = false)
     {
-        DrawTextureEx(sprite, {position.x - sprite.width*0.5f*global::SCALE, position.y - sprite.height*0.5f*global::SCALE}, rotation, scale, WHITE);
+        Rectangle src = {
+            flipX ? (float)sprite.width : 0.0f,
+            flipY ? (float)sprite.height : 0.0f,
+            (float)sprite.width  * (flipX ? -1 : 1),
+            (float)sprite.height * (flipY ? -1 : 1)
+        };
+
+        Rectangle dst = {
+            position.x,
+            position.y,
+            sprite.width * scale,
+            sprite.height * scale
+        };
+
+        DrawTexturePro(
+            sprite,
+            src,
+            dst,
+            { origin.x * scale, origin.y * scale },
+            rotation,
+            WHITE
+        );
     }
+
 
     void DrawOrigin(double size = 3.0)
     {

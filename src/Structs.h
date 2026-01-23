@@ -134,5 +134,5 @@ struct Vec2
 #pragma endregion
 };
 
-inline int sign(float num) { return ((num > 1) - (num < 1)); }
+inline int sign(float num) { return ((num > 0) - (num < 0)); }
 inline float absolute(float num) { return num * sign(num); }

@@ -29,26 +29,7 @@ void Pipes::Update()
 void Pipes::Draw(float scale)
 {
     top_pipe.Draw(scale);
-    DrawTexturePro(
-        bottom_pipe.sprite,
-        {
-            0, 0,
-            (float)bottom_pipe.sprite.width,
-            (float)-bottom_pipe.sprite.height
-        },
-        {
-            bottom_pipe.position.x,
-            bottom_pipe.position.y,
-            bottom_pipe.sprite.width * scale,
-            bottom_pipe.sprite.height * scale
-        },
-        {
-            bottom_pipe.sprite.width * scale * 0.5f,
-            bottom_pipe.sprite.height * scale * 0.5f
-        },
-        0,
-        WHITE
-    );
+    bottom_pipe.Draw(scale, 0.0f, false, true);
 }
 
 void Pipes::DrawOrigin()
@@ -110,11 +91,9 @@ void MainMenu::Step()
 }
 #pragma endregion
 
-#pragma region Game
-
 Game::Game() : birb(Vec2{0, 0}, {0, 0, 0, 0}, LoadTexture("assets/birb.png")){}
 
-    #pragma region Game - Setup
+#pragma region Game - Setup
 void Game::Setup()
 {
     GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
@@ -137,9 +116,9 @@ void Game::Setup()
     pipes.clear();
     state = State::Unpaused;
 }
-    #pragma endregion
+#pragma endregion
 
-    #pragma region Game - Step
+#pragma region Game - Step
 void Game::Step()
 {
     bool switchRooms = false;
@@ -160,7 +139,11 @@ void Game::Step()
             {
                 pipes[i].Update();
                 pipes[i].Draw(SCALE);
-                if (collide(birb, pipes[i].top_pipe) || collide(birb, pipes[i].bottom_pipe)) state = State::GameOver;
+                if (collide(birb, pipes[i].top_pipe) || collide(birb, pipes[i].bottom_pipe))
+                {
+                    state = State::GameOver;
+                    birb.velocity = {0.0f,  jump};
+                }
                 if (pipes[i].position.x + pipes[i].top_pipe.sprite.width*SCALE*0.5f + 2 < birb.position.x)
                 {
                     if (!pipes[i].beenPassed)
@@ -172,7 +155,11 @@ void Game::Step()
                 }
             }
 
-            if(birb.position.y * sign(birb.position.y) > ScreenHeight*0.5f + 30) state = State::GameOver;
+            if(birb.position.y * sign(birb.position.y) > ScreenHeight*0.5f + 30)
+            {
+                state = State::GameOver;
+                birb.velocity = {0.0f, jump};
+            }
 
             birb.Draw(SCALE);
     
@@ -213,7 +200,9 @@ void Game::Step()
         if (IsKeyPressed(KEY_ESCAPE)) manager.current->Setup();
         ClearBackground(BackgroundColor);
         for(Pipes& p : pipes) p.Draw(SCALE);
-        birb.Draw(SCALE);
+        birb.Draw(SCALE, 0.0f, false, true);
+        birb.Update();
+        birb.velocity.y += gravity;
         EndMode2D();
 
         if(GuiButton({ScreenWidth  * 0.5f - 120, ScreenHeight * 0.5f - 30 - 50, 240, 60}, "Restart")) manager.current->Setup();
@@ -234,5 +223,4 @@ void Game::Step()
         manager.SwitchTo<MainMenu>();
     }
 }
-    #pragma endregion
 #pragma endregion
