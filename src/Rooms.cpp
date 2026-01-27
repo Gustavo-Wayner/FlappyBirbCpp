@@ -7,11 +7,26 @@
 
 using namespace global;
 
+namespace Assets
+{
+    Texture2D pipeTex;
+
+    void LoadTextures()
+    {
+        pipeTex = LoadTexture("assets/pipe.png");
+    }
+
+    void UnloadTextures()
+    {
+        UnloadTexture(pipeTex);
+    }
+}
+
 #pragma region Pipes
 Pipes::Pipes(Vec2 _position) : position(_position)
 {    
-    top_pipe = GameObject(Vec2{position.x, position.y - offset}, {position.x, position.y + offset, 533*SCALE, 2186*SCALE}, LoadTexture("assets/pipe.png"));
-    bottom_pipe = GameObject(Vec2{position.x, position.y + offset}, {position.x, position.y - offset, 533*SCALE, 2186*SCALE}, LoadTexture("assets/pipe.png"));
+    top_pipe = GameObject(Vec2{position.x, position.y - offset}, {position.x, position.y + offset, 533*SCALE, 2186*SCALE}, Assets::pipeTex);
+    bottom_pipe = GameObject(Vec2{position.x, position.y + offset}, {position.x, position.y - offset, 533*SCALE, 2186*SCALE}, Assets::pipeTex);
 
     velocity = {0, 0};
 }
@@ -103,6 +118,7 @@ Game::Game() : birb(Vec2{0, 0}, {0, 0, 0, 0}, LoadTexture("assets/birb.png")){}
 #pragma region Game - Setup
 void Game::Setup()
 {
+    Assets::LoadTextures();
     GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
     BackgroundColor = {70, 110, 180, 255};
     SetRandomSeed(time(0));
@@ -229,6 +245,7 @@ void Game::Step()
 
     if (switchRooms)
     {
+        Assets::UnloadTextures();
         state = State::Unpaused;
         manager.SwitchTo<MainMenu>();
     }

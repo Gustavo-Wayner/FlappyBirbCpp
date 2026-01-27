@@ -1,4 +1,5 @@
 #include <raylib.h>
+#include <iostream>
 #include <ctime>
 
 #include "Objects.h"
@@ -16,6 +17,7 @@ int main()
     while (!WindowShouldClose())
     {
         global::manager.Update();
+        std::cout << global::vsyncEnabled << std::endl;
     }
 
     if (!global::closed)
