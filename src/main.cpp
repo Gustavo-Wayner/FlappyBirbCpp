@@ -6,8 +6,8 @@
 
 int main()
 {
-    SetWindowState(FLAG_VSYNC_HINT);
-    InitWindow(900, 600, "Pong");
+    SetConfigFlags(FLAG_VSYNC_HINT);
+    InitWindow(global::ScreenWidth, global::ScreenHeight, "Flappy Birb");
     SetTargetFPS(60);
 
     global::manager.SwitchTo<MainMenu>();

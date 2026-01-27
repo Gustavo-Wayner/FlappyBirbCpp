@@ -9,4 +9,5 @@ namespace global
     extern int ScreenWidth;
     extern int ScreenHeight;
     extern bool closed;
+    extern bool vsyncEnabled;
 }

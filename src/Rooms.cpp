@@ -76,6 +76,13 @@ void MainMenu::Step()
     bool switchRooms = false;
     BeginDrawing();
     ClearBackground(WHITE);
+    if (GuiCheckBox({ 20, 20, 20, 20 }, " VSync", &vsyncEnabled))
+    {
+        if (vsyncEnabled)
+            SetTargetFPS(0);
+        else
+            SetTargetFPS(60);
+    }
     if (GuiButton({GetScreenWidth() * 0.5f - 120, GetScreenHeight() * 0.5f - 30 - 50, 240, 60}, "Play"))
         switchRooms = true;
     if (GuiButton({GetScreenWidth() * 0.5f - 120, GetScreenHeight() * 0.5f - 30 + 50, 240, 60}, "Quit"))
@@ -123,11 +130,12 @@ void Game::Step()
 {
     bool switchRooms = false;
     BeginDrawing();
-    BeginMode2D(camera);
+    DrawCircle(0, 0, 3, BLACK);
     switch (state)
     {
     case State::Unpaused:
         {
+            BeginMode2D(camera);
             if (IsKeyPressed(KEY_ESCAPE)) state = State::Paused;
             ClearBackground(BackgroundColor);
             birb.velocity.y += gravity;
@@ -151,7 +159,7 @@ void Game::Step()
                         pipes[i].beenPassed = true;
                         score++;
                     }
-                    if (pipes[i].position.x < -430) pipes.erase(pipes.begin() + i);
+                    if (pipes[i].position.x < -470) pipes.erase(pipes.begin() + i);
                 }
             }
 
@@ -165,7 +173,6 @@ void Game::Step()
     
             EndMode2D();
             DrawText(TextFormat("%d\n", score), 450, 10, 21, BLACK);
-            BeginMode2D(camera);
             timer += 1;
 
             if(timer >= 50) 
@@ -181,36 +188,39 @@ void Game::Step()
     case State::Paused:
         if (IsKeyPressed(KEY_ESCAPE)) state = State::Unpaused;
         ClearBackground(BackgroundColor);
+
+        BeginMode2D(camera);
         for(Pipes& p : pipes) p.Draw(SCALE);
         birb.Draw(SCALE);
         EndMode2D();
 
         DrawText(TextFormat("%d\n", score), 450, 10, 21, BLACK);
 
-        if (GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f - 30 - 50, 240, 60}, "Resume"))
+        if (GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f - 90, 240, 60}, "Resume"))
         {
             state = State::Unpaused;
         }
-        if (GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f - 30 + 50, 240, 60}, "Return to main menu"))
+        if (GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f + 30, 240, 60}, "Return to main menu"))
             switchRooms = true;
-            BeginMode2D(camera);
         break;
 
     case State::GameOver:
         if (IsKeyPressed(KEY_ESCAPE)) manager.current->Setup();
         ClearBackground(BackgroundColor);
+
+        BeginMode2D(camera);
         for(Pipes& p : pipes) p.Draw(SCALE);
         birb.Draw(SCALE, 0.0f, false, true);
+
+        EndMode2D();
         birb.Update();
         birb.velocity.y += gravity;
-        EndMode2D();
 
-        if(GuiButton({ScreenWidth  * 0.5f - 120, ScreenHeight * 0.5f - 30 - 50, 240, 60}, "Restart")) manager.current->Setup();
-        if (GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f - 30 + 50, 240, 60}, "Return to main menu"))
+        if(GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f - 90, 240, 60}, "Restart")) manager.current->Setup();
+        if (GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f + 30, 240, 60}, "Return to main menu"))
         {
             switchRooms = true;
         }
-        BeginMode2D(camera);
         break;
     }
 
