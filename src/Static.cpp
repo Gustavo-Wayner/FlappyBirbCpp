@@ -9,4 +9,5 @@ namespace global
     int ScreenHeight = 600;
     bool closed = false;
     bool vsyncEnabled = false;
+    bool showFPS = false;
 }

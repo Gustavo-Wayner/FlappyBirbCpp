@@ -9,7 +9,7 @@ int main()
 {
     SetConfigFlags(FLAG_VSYNC_HINT);
     InitWindow(global::ScreenWidth, global::ScreenHeight, "Flappy Birb");
-    SetTargetFPS(60);
+    SetTargetFPS(120);
 
     global::manager.SwitchTo<MainMenu>();
     SetExitKey(KEY_NULL);
@@ -17,7 +17,7 @@ int main()
     while (!WindowShouldClose())
     {
         global::manager.Update();
-        std::cout << global::vsyncEnabled << std::endl;
+        std::cout << global::showFPS << std::endl;
     }
 
     if (!global::closed)

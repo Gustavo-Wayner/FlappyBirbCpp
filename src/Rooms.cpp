@@ -91,13 +91,17 @@ void MainMenu::Step()
     bool switchRooms = false;
     BeginDrawing();
     ClearBackground(WHITE);
-    if (GuiCheckBox({ 20, 20, 20, 20 }, " VSync", &vsyncEnabled))
+    if (showFPS) DrawFPS(20, 20);
+    if (GuiCheckBox({ (float)ScreenWidth - 180, (float)ScreenHeight - 25, 20, 20 }, " VSync", &vsyncEnabled)) {}
+
+    if (GuiCheckBox({ (float)ScreenWidth - 180, (float)ScreenHeight - 50, 20, 20 }, " Show fps", &showFPS))
     {
         if (vsyncEnabled)
             SetTargetFPS(0);
         else
-            SetTargetFPS(60);
+            SetTargetFPS(120);
     }
+
     if (GuiButton({GetScreenWidth() * 0.5f - 120, GetScreenHeight() * 0.5f - 30 - 50, 240, 60}, "Play"))
         switchRooms = true;
     if (GuiButton({GetScreenWidth() * 0.5f - 120, GetScreenHeight() * 0.5f - 30 + 50, 240, 60}, "Quit"))
@@ -133,7 +137,7 @@ void Game::Setup()
     gravity = 0.5f;
     score = 0;
 
-    birb = GameObject(Vec2{-200, -90}, Rectangle{-200, -800, 50, 50}, LoadTexture("assets/birb.png"));
+    birb = GameObject(Vec2{-320, -90}, Rectangle{-200, -800, 50, 50}, LoadTexture("assets/birb.png"));
     birb.velocity = {0, 0};
 
     pipes.clear();
@@ -146,7 +150,7 @@ void Game::Step()
 {
     bool switchRooms = false;
     BeginDrawing();
-    DrawCircle(0, 0, 3, BLACK);
+
     switch (state)
     {
     case State::Unpaused:
@@ -189,6 +193,7 @@ void Game::Step()
     
             EndMode2D();
             DrawText(TextFormat("%d\n", score), 450, 10, 21, BLACK);
+            if (showFPS) DrawFPS(20, 20);
             timer += 1;
 
             if(timer >= 50) 
@@ -210,6 +215,7 @@ void Game::Step()
         birb.Draw(SCALE);
         EndMode2D();
 
+        if (showFPS) DrawFPS(20, 20);
         DrawText(TextFormat("%d\n", score), 450, 10, 21, BLACK);
 
         if (GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f - 90, 240, 60}, "Resume"))
@@ -229,6 +235,7 @@ void Game::Step()
         birb.Draw(SCALE, 0.0f, false, true);
 
         EndMode2D();
+        if (showFPS) DrawFPS(20, 20);
         birb.Update();
         birb.velocity.y += gravity;
 
