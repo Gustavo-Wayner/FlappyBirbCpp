@@ -9,7 +9,13 @@ int main()
 {
     SetConfigFlags(FLAG_VSYNC_HINT);
     InitWindow(global::ScreenWidth, global::ScreenHeight, "Flappy Birb");
-    SetTargetFPS(120);
+    SetTargetFPS(60);
+
+    {
+        Image icon = LoadImage("assets/birb.png");
+        SetWindowIcon(icon);
+        UnloadImage(icon);
+    }
 
     global::manager.SwitchTo<MainMenu>();
     SetExitKey(KEY_NULL);
@@ -17,7 +23,6 @@ int main()
     while (!WindowShouldClose())
     {
         global::manager.Update();
-        std::cout << global::showFPS << std::endl;
     }
 
     if (!global::closed)

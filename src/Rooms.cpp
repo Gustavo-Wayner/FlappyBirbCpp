@@ -92,15 +92,15 @@ void MainMenu::Step()
     BeginDrawing();
     ClearBackground(WHITE);
     if (showFPS) DrawFPS(20, 20);
-    if (GuiCheckBox({ (float)ScreenWidth - 180, (float)ScreenHeight - 25, 20, 20 }, " VSync", &vsyncEnabled)) {}
-
-    if (GuiCheckBox({ (float)ScreenWidth - 180, (float)ScreenHeight - 50, 20, 20 }, " Show fps", &showFPS))
+    if (GuiCheckBox({ (float)ScreenWidth - 180, (float)ScreenHeight - 25, 20, 20 }, " VSync", &vsyncEnabled))
     {
         if (vsyncEnabled)
             SetTargetFPS(0);
         else
-            SetTargetFPS(120);
+            SetTargetFPS(60);
     }
+
+    if (GuiCheckBox({ (float)ScreenWidth - 180, (float)ScreenHeight - 50, 20, 20 }, " Show fps", &showFPS)) {}
 
     if (GuiButton({GetScreenWidth() * 0.5f - 120, GetScreenHeight() * 0.5f - 30 - 50, 240, 60}, "Play"))
         switchRooms = true;

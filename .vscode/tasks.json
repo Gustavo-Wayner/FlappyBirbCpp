@@ -10,6 +10,7 @@
                 "src/Objects.cpp",
                 "src/Structs.cpp",
                 "src/Static.cpp",
+                "icon.o",
                 "-o",
                 "game.exe",
                 "-std=c++11",
