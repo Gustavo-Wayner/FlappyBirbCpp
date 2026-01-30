@@ -7,19 +7,18 @@
 
 int main()
 {
-    SetConfigFlags(FLAG_VSYNC_HINT);
     InitWindow(global::ScreenWidth, global::ScreenHeight, "Flappy Birb");
-    SetTargetFPS(60);
-
+    SetTargetFPS(global::FPS);
+    
     {
         Image icon = LoadImage("assets/birb.png");
         SetWindowIcon(icon);
         UnloadImage(icon);
     }
-
+    
     global::manager.SwitchTo<MainMenu>();
     SetExitKey(KEY_NULL);
-
+    
     while (!WindowShouldClose())
     {
         global::manager.Update();

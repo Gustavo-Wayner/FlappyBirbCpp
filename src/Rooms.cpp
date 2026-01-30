@@ -92,13 +92,6 @@ void MainMenu::Step()
     BeginDrawing();
     ClearBackground(WHITE);
     if (showFPS) DrawFPS(20, 20);
-    if (GuiCheckBox({ (float)ScreenWidth - 180, (float)ScreenHeight - 25, 20, 20 }, " VSync", &vsyncEnabled))
-    {
-        if (vsyncEnabled)
-            SetTargetFPS(0);
-        else
-            SetTargetFPS(60);
-    }
 
     if (GuiCheckBox({ (float)ScreenWidth - 180, (float)ScreenHeight - 50, 20, 20 }, " Show fps", &showFPS)) {}
 
@@ -133,8 +126,8 @@ void Game::Setup()
     camera.zoom = 1.0f;
 
     timer = 0.0f;
-    jump = -10.0f;
-    gravity = 0.5f;
+    jump = -680.0f;
+    gravity = 17.8f;
     score = 0;
 
     birb = GameObject(Vec2{-320, -90}, Rectangle{-200, -800, 50, 50}, LoadTexture("assets/birb.png"));
@@ -158,8 +151,8 @@ void Game::Step()
             BeginMode2D(camera);
             if (IsKeyPressed(KEY_ESCAPE)) state = State::Paused;
             ClearBackground(BackgroundColor);
-            birb.velocity.y += gravity;
-            if(IsKeyPressed(KEY_SPACE)) birb.velocity.y = jump;
+            birb.velocity.y += gravity * GetFrameTime();
+            if(IsKeyPressed(KEY_SPACE)) birb.velocity.y = jump * GetFrameTime();
 
             birb.Update(-1.0f, 6.0f);
             
@@ -170,7 +163,7 @@ void Game::Step()
                 if (collide(birb, pipes[i].top_pipe) || collide(birb, pipes[i].bottom_pipe))
                 {
                     state = State::GameOver;
-                    birb.velocity = {0.0f,  jump};
+                    birb.velocity = {0.0f,  jump * GetFrameTime()};
                 }
                 if (pipes[i].position.x + pipes[i].top_pipe.sprite.width*SCALE*0.5f + 2 < birb.position.x)
                 {
@@ -186,7 +179,7 @@ void Game::Step()
             if(birb.position.y * sign(birb.position.y) > ScreenHeight*0.5f + 30)
             {
                 state = State::GameOver;
-                birb.velocity = {0.0f, jump};
+                birb.velocity = {0.0f, jump * GetFrameTime()};
             }
 
             birb.Draw(SCALE);
@@ -196,10 +189,10 @@ void Game::Step()
             if (showFPS) DrawFPS(20, 20);
             timer += 1;
 
-            if(timer >= 50) 
+            if(timer >= 95) 
             {
                 pipes.push_back(Pipes(Vec2{ 800.0f, (float)GetRandomValue(-132, 132) }));
-                pipes[pipes.size() - 1].velocity = {-8, 0};
+                pipes[pipes.size() - 1].velocity = {-520.0f * GetFrameTime(), 0};
                 timer = 0;
             }
 
@@ -237,7 +230,7 @@ void Game::Step()
         EndMode2D();
         if (showFPS) DrawFPS(20, 20);
         birb.Update();
-        birb.velocity.y += gravity;
+        birb.velocity.y += gravity * GetFrameTime();
 
         if(GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f - 90, 240, 60}, "Restart")) manager.current->Setup();
         if (GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f + 30, 240, 60}, "Return to main menu"))

@@ -12,7 +12,7 @@ bool collide(const GameObject &a, const GameObject &b);
 class Pipes
 {
 public:
-    int offset = 275;
+    int offset = 280;
     Vec2 position;
     Vec2 velocity;
     GameObject top_pipe;

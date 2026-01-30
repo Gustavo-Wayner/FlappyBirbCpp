@@ -8,6 +8,6 @@ namespace global
     int ScreenWidth = 900;
     int ScreenHeight = 600;
     bool closed = false;
-    bool vsyncEnabled = false;
     bool showFPS = false;
+    int FPS = 120;
 }
