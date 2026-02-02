@@ -10,4 +10,6 @@ namespace global
     bool closed = false;
     bool showFPS = false;
     int FPS = 120;
+    int score = 0;
+    std::ifstream file;
 }

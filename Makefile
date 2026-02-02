@@ -15,7 +15,7 @@ OBJS := $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 CXX ?= g++
 
 # Raylib
-RAYLIB_DIR     := raylib
+RAYLIB_DIR     := third_party/raylib
 RAYLIB_INC     := $(RAYLIB_DIR)/src
 RAYLIB_EXT     := $(RAYLIB_DIR)/src/external
 RAYLIB_LIB_DIR := $(RAYLIB_DIR)/src
@@ -23,8 +23,8 @@ RAYLIB_LIB_DIR := $(RAYLIB_DIR)/src
 # ===========================
 # Compiler flags
 # ===========================
-CXXFLAGS := -std=c++11 -Wall -Wextra -O2 \
-	-I$(RAYLIB_INC) -I$(RAYLIB_EXT) \
+CXXFLAGS := -std=c++20 -Wall -Wextra -O2 \
+	-I$(RAYLIB_INC) -I$(RAYLIB_EXT) -Ithird_party\
 	-Wno-missing-field-initializers -Wno-unused-parameter
 
 # ===========================
@@ -92,7 +92,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@$(MKDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-run: assets $(TARGET)
+run: $(TARGET)
 	@cd "$(BUILD_DIR)" && "$(TARGET_NAME)$(EXE_EXT)"
 
 clean:

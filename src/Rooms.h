@@ -60,13 +60,13 @@ struct RoomManager
 
 struct MainMenu : public Room
 {
+    int hs;
     void Setup() override;
     void Step() override;
 };
 
 struct Game : public Room
 {
-    int score;
     GameObject birb;
     float gravity;
     float jump;

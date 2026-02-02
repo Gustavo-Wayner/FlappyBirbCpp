@@ -13,12 +13,13 @@
                 "icon.o",
                 "-o",
                 "game.exe",
-                "-std=c++11",
+                "-std=c++20",
 
-                "-Iraylib/src",
-                "-Iraylib/src/external",
+                "-Ithird_party/raylib/src",
+                "-Ithird_party/raylib/src/external",
+                "-Ithird_party",
 
-                "-Lraylib/src",
+                "-Lthird_party/raylib/src",
                 "-lraylib",
 
                 "-lopengl32",
@@ -43,17 +44,15 @@
                 "src/Structs.cpp",
                 "-o",
                 "game",
-                "-std=c++11",
+                "-std=c++20",
 
                 "-Ithird_party/raylib/src",
                 "-Ithird_party/raylib/src/external",
-                "-Ithird_party/lua/src",
+                "-Ithird_party",
 
                 "-Lthird_party/raylib/src",
-                "-Lthird_party/lua/lib",
 
-                "-lraylib",
-                "-llua",
+                "-lthird_party/raylib",
 
                 "-lGL",
                 "-lm",
@@ -78,17 +77,14 @@
                 "src/Structs.cpp",
                 "-o",
                 "game",
-                "-std=c++11",
+                "-std=c++20",
 
                 "-Ithird_party/raylib/src",
                 "-Ithird_party/raylib/src/external",
-                "-Ithird_party/lua/src",
+                "-Ithird_party",
 
                 "-Lthird_party/raylib/src",
-                "-Lthird_party/lua/lib",
-
-                "-lraylib",
-                "-llua",
+                "-lthird_party/raylib",
 
                 "-framework", "OpenGL",
                 "-framework", "Cocoa",

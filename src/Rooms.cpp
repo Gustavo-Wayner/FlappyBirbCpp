@@ -1,11 +1,15 @@
 #include "Rooms.h"
 
 #include <raylib.h>
+#include <fstream>
+#include <nlohmann/json.hpp>
+#include <format>
 
 #define RAYGUI_IMPLEMENTATION
 #include <raygui.h>
 
 using namespace global;
+using json = nlohmann::json;
 
 namespace Assets
 {
@@ -84,6 +88,11 @@ void RoomManager::Update()
 void MainMenu::Setup()
 {
     GuiSetStyle(DEFAULT, TEXT_SIZE, 30);
+
+    json j;
+    file >> j;
+
+    hs = j["highscore"];
 }
 void MainMenu::Step()
 {
@@ -93,7 +102,13 @@ void MainMenu::Step()
     ClearBackground(WHITE);
     if (showFPS) DrawFPS(20, 20);
 
-    if (GuiCheckBox({ (float)ScreenWidth - 180, (float)ScreenHeight - 50, 20, 20 }, " Show fps", &showFPS)) {}
+    if (GuiCheckBox({ (float)ScreenWidth - 180, (float)ScreenHeight - 50, 20, 20 }, " Show fps", &showFPS))
+    {
+        json j;
+        file >> j;
+        
+        j["isShowFPSOn"] = showFPS;
+    }
 
     if (GuiButton({GetScreenWidth() * 0.5f - 120, GetScreenHeight() * 0.5f - 30 - 50, 240, 60}, "Play"))
         switchRooms = true;
@@ -102,6 +117,8 @@ void MainMenu::Step()
         over = true;
         closed = true;
     }
+
+    DrawText(std::format("Hight score: {}", hs).c_str(), 10, ScreenHeight + 20, 15, BLACK);
     EndDrawing();
     if (switchRooms)
         manager.SwitchTo<Game>();
@@ -220,6 +237,17 @@ void Game::Step()
         break;
 
     case State::GameOver:
+        json j;
+        file >> j;
+
+        if(score > j["highscore"])
+        {
+            j["highscore"] = score;
+        
+            std::ofstream out("assets/data.json");
+            out << j.dump(4);
+        }
+
         if (IsKeyPressed(KEY_ESCAPE)) manager.current->Setup();
         ClearBackground(BackgroundColor);
 
@@ -245,6 +273,17 @@ void Game::Step()
 
     if (switchRooms)
     {
+        json j;
+        file >> j;
+
+        if(score > j["highscore"])
+        {
+            j["highscore"] = score;
+        
+            std::ofstream out("assets/data.json");
+            out << j.dump(4);
+        }
+
         Assets::UnloadTextures();
         state = State::Unpaused;
         manager.SwitchTo<MainMenu>();
