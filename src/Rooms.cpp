@@ -89,6 +89,7 @@ void MainMenu::Setup()
 {
     GuiSetStyle(DEFAULT, TEXT_SIZE, 30);
 
+    std::ifstream file("assets/data.json");
     json j;
     file >> j;
 
@@ -104,10 +105,14 @@ void MainMenu::Step()
 
     if (GuiCheckBox({ (float)ScreenWidth - 180, (float)ScreenHeight - 50, 20, 20 }, " Show fps", &showFPS))
     {
+        std::ifstream file("assets/data.json");
         json j;
         file >> j;
         
         j["isShowFPSOn"] = showFPS;
+        std::ofstream out("assets/data.json");
+
+        out << j.dump(4);
     }
 
     if (GuiButton({GetScreenWidth() * 0.5f - 120, GetScreenHeight() * 0.5f - 30 - 50, 240, 60}, "Play"))
@@ -118,7 +123,7 @@ void MainMenu::Step()
         closed = true;
     }
 
-    DrawText(std::format("Hight score: {}", hs).c_str(), 10, ScreenHeight + 20, 15, BLACK);
+    DrawText(std::format("Hight score: {}", hs).c_str(), 10, ScreenHeight - 20, 15, BLACK);
     EndDrawing();
     if (switchRooms)
         manager.SwitchTo<Game>();
@@ -237,6 +242,8 @@ void Game::Step()
         break;
 
     case State::GameOver:
+        std::ifstream file ("assets/data.json");
+        
         json j;
         file >> j;
 
@@ -273,6 +280,7 @@ void Game::Step()
 
     if (switchRooms)
     {
+        std::ifstream file("assets/data.json");
         json j;
         file >> j;
 

@@ -21,10 +21,11 @@ int main()
         out << j.dump(4);
         out.close();
     }
+    std::ifstream file("assets/data.json");
     
-    global::file = std::ifstream("assets/data.json");
+    file = std::ifstream("assets/data.json");
 
-    global::file >> j;
+    file >> j;
     global::showFPS = j["isShowFPSOn"];
 
     InitWindow(global::ScreenWidth, global::ScreenHeight, "Flappy Birb");

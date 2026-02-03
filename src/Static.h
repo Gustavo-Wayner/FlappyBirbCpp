@@ -15,5 +15,4 @@ namespace global
     extern bool showFPS;
     extern int FPS;
     extern int score;
-    extern std::ifstream file;
 }
