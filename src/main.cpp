@@ -21,11 +21,13 @@ int main()
         out << j.dump(4);
         out.close();
     }
-    std::ifstream file("assets/data.json");
-    
-    file = std::ifstream("assets/data.json");
+    {
+        std::ifstream file("assets/data.json");
+        
+        file = std::ifstream("assets/data.json");
 
-    file >> j;
+        file >> j;
+    }
     global::showFPS = j["isShowFPSOn"];
 
     InitWindow(global::ScreenWidth, global::ScreenHeight, "Flappy Birb");
@@ -50,9 +52,14 @@ int main()
         j["highscore"] = global::score;
     }
     
+    std::ifstream file("assets/data.json");  
+    file = std::ifstream("assets/data.json");
+    file >> j;
+
     std::ofstream out("assets/data.json");
     out << j.dump(4);
     if (!global::closed)
         CloseWindow();
+    out.close();
     return 0;
 }

@@ -8,7 +8,6 @@
 #define RAYGUI_IMPLEMENTATION
 #include <raygui.h>
 
-using namespace global;
 using json = nlohmann::json;
 
 namespace Assets
@@ -29,8 +28,8 @@ namespace Assets
 #pragma region Pipes
 Pipes::Pipes(Vec2 _position) : position(_position)
 {    
-    top_pipe = GameObject(Vec2{position.x, position.y - offset}, {position.x, position.y + offset, 533*SCALE, 2186*SCALE}, Assets::pipeTex);
-    bottom_pipe = GameObject(Vec2{position.x, position.y + offset}, {position.x, position.y - offset, 533*SCALE, 2186*SCALE}, Assets::pipeTex);
+    top_pipe = GameObject(Vec2{position.x, position.y - offset}, {position.x, position.y + offset, 533*global::SCALE, 2186*global::SCALE}, Assets::pipeTex);
+    bottom_pipe = GameObject(Vec2{position.x, position.y + offset}, {position.x, position.y - offset, 533*global::SCALE, 2186*global::SCALE}, Assets::pipeTex);
 
     velocity = {0, 0};
 }
@@ -101,18 +100,19 @@ void MainMenu::Step()
     bool switchRooms = false;
     BeginDrawing();
     ClearBackground(WHITE);
-    if (showFPS) DrawFPS(20, 20);
+    if (global::showFPS) DrawFPS(20, 20);
 
-    if (GuiCheckBox({ (float)ScreenWidth - 180, (float)ScreenHeight - 50, 20, 20 }, " Show fps", &showFPS))
+    if (GuiCheckBox({ (float)global::ScreenWidth - 180, (float)global::ScreenHeight - 50, 20, 20 }, " Show fps", &global::showFPS))
     {
         std::ifstream file("assets/data.json");
         json j;
         file >> j;
         
-        j["isShowFPSOn"] = showFPS;
+        j["isShowFPSOn"] = global::showFPS;
         std::ofstream out("assets/data.json");
 
         out << j.dump(4);
+        out.close();
     }
 
     if (GuiButton({GetScreenWidth() * 0.5f - 120, GetScreenHeight() * 0.5f - 30 - 50, 240, 60}, "Play"))
@@ -120,13 +120,13 @@ void MainMenu::Step()
     if (GuiButton({GetScreenWidth() * 0.5f - 120, GetScreenHeight() * 0.5f - 30 + 50, 240, 60}, "Quit"))
     {
         over = true;
-        closed = true;
+        global::closed = true;
     }
 
-    DrawText(std::format("Hight score: {}", hs).c_str(), 10, ScreenHeight - 20, 15, BLACK);
+    DrawText(std::format("Hight score: {}", hs).c_str(), 10, global::ScreenHeight - 20, 15, BLACK);
     EndDrawing();
     if (switchRooms)
-        manager.SwitchTo<Game>();
+        global::manager.SwitchTo<Game>();
     if (over)
         CloseWindow();
 }
@@ -150,7 +150,7 @@ void Game::Setup()
     timer = 0.0f;
     jump = -680.0f;
     gravity = 17.8f;
-    score = 0;
+    global::score = 0;
 
     birb = GameObject(Vec2{-320, -90}, Rectangle{-200, -800, 50, 50}, LoadTexture("assets/birb.png"));
     birb.velocity = {0, 0};
@@ -181,34 +181,34 @@ void Game::Step()
             for(int i = pipes.size() - 1; i >= 0; i--)
             {
                 pipes[i].Update();
-                pipes[i].Draw(SCALE);
+                pipes[i].Draw(global::SCALE);
                 if (collide(birb, pipes[i].top_pipe) || collide(birb, pipes[i].bottom_pipe))
                 {
                     state = State::GameOver;
                     birb.velocity = {0.0f,  jump * GetFrameTime()};
                 }
-                if (pipes[i].position.x + pipes[i].top_pipe.sprite.width*SCALE*0.5f + 2 < birb.position.x)
+                if (pipes[i].position.x + pipes[i].top_pipe.sprite.width*global::SCALE*0.5f + 2 < birb.position.x)
                 {
                     if (!pipes[i].beenPassed)
                     {
                         pipes[i].beenPassed = true;
-                        score++;
+                        global::score++;
                     }
                     if (pipes[i].position.x < -470) pipes.erase(pipes.begin() + i);
                 }
             }
 
-            if(birb.position.y * sign(birb.position.y) > ScreenHeight*0.5f + 30)
+            if(birb.position.y * sign(birb.position.y) > global::ScreenHeight*0.5f + 30)
             {
                 state = State::GameOver;
                 birb.velocity = {0.0f, jump * GetFrameTime()};
             }
 
-            birb.Draw(SCALE);
+            birb.Draw(global::SCALE);
     
             EndMode2D();
-            DrawText(TextFormat("%d\n", score), 450, 10, 21, BLACK);
-            if (showFPS) DrawFPS(20, 20);
+            DrawText(TextFormat("%d\n", global::score), 450, 10, 21, BLACK);
+            if (global::showFPS) DrawFPS(20, 20);
             timer += 1;
 
             if(timer >= 95) 
@@ -226,18 +226,18 @@ void Game::Step()
         ClearBackground(BackgroundColor);
 
         BeginMode2D(camera);
-        for(Pipes& p : pipes) p.Draw(SCALE);
-        birb.Draw(SCALE);
+        for(Pipes& p : pipes) p.Draw(global::SCALE);
+        birb.Draw(global::SCALE);
         EndMode2D();
 
-        if (showFPS) DrawFPS(20, 20);
-        DrawText(TextFormat("%d\n", score), 450, 10, 21, BLACK);
+        if (global::showFPS) DrawFPS(20, 20);
+        DrawText(TextFormat("%d\n", global::score), 450, 10, 21, BLACK);
 
-        if (GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f - 90, 240, 60}, "Resume"))
+        if (GuiButton({global::ScreenWidth * 0.5f - 120, global::ScreenHeight * 0.5f - 90, 240, 60}, "Resume"))
         {
             state = State::Unpaused;
         }
-        if (GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f + 30, 240, 60}, "Return to main menu"))
+        if (GuiButton({global::ScreenWidth * 0.5f - 120, global::ScreenHeight * 0.5f + 30, 240, 60}, "Return to main menu"))
             switchRooms = true;
         break;
 
@@ -247,28 +247,29 @@ void Game::Step()
         json j;
         file >> j;
 
-        if(score > j["highscore"])
+        if(global::score > j["highscore"])
         {
-            j["highscore"] = score;
+            j["highscore"] = global::score;
         
             std::ofstream out("assets/data.json");
             out << j.dump(4);
+            out.close();
         }
 
-        if (IsKeyPressed(KEY_ESCAPE)) manager.current->Setup();
+        if (IsKeyPressed(KEY_ESCAPE)) global::manager.current->Setup();
         ClearBackground(BackgroundColor);
 
         BeginMode2D(camera);
-        for(Pipes& p : pipes) p.Draw(SCALE);
-        birb.Draw(SCALE, 0.0f, false, true);
+        for(Pipes& p : pipes) p.Draw(global::SCALE);
+        birb.Draw(global::SCALE, 0.0f, false, true);
 
         EndMode2D();
-        if (showFPS) DrawFPS(20, 20);
+        if (global::showFPS) DrawFPS(20, 20);
         birb.Update();
         birb.velocity.y += gravity * GetFrameTime();
 
-        if(GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f - 90, 240, 60}, "Restart")) manager.current->Setup();
-        if (GuiButton({ScreenWidth * 0.5f - 120, ScreenHeight * 0.5f + 30, 240, 60}, "Return to main menu"))
+        if(GuiButton({global::ScreenWidth * 0.5f - 120, global::ScreenHeight * 0.5f - 90, 240, 60}, "Restart")) global::manager.current->Setup();
+        if (GuiButton({global::ScreenWidth * 0.5f - 120, global::ScreenHeight * 0.5f + 30, 240, 60}, "Return to main menu"))
         {
             switchRooms = true;
         }
@@ -284,17 +285,18 @@ void Game::Step()
         json j;
         file >> j;
 
-        if(score > j["highscore"])
+        if(global::score > j["highscore"])
         {
-            j["highscore"] = score;
+            j["highscore"] = global::score;
         
             std::ofstream out("assets/data.json");
             out << j.dump(4);
+            out.close();
         }
 
         Assets::UnloadTextures();
         state = State::Unpaused;
-        manager.SwitchTo<MainMenu>();
+        global::manager.SwitchTo<MainMenu>();
     }
 }
 #pragma endregion
