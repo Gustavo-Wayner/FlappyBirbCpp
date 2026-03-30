@@ -33,13 +33,14 @@ CXXFLAGS := -std=c++20 -Wall -Wextra -O2 \
 ifeq ($(OS),Windows_NT)
     ifneq ($(MSYSTEM),)
         PLATFORM := WINDOWS_MSYS
+        MKDIR  = mkdir -p "$(dir $@)"
+        RMDIR  = rm -rf
     else
-        PLATFORM := WINDOWS_CMD
+        PLATFORM := WINDOWS
+        SHELL = pwsh.exe -NoProfile -Command
+        MKDIR  = if not exist "$(dir $@)" mkdir "$(dir $@)"
+        RMDIR  = rmdir /S /Q
     endif
-    PLATFORM := WINDOWS
-    SHELL = pwsh.exe -NoProfile -Command
-    MKDIR  = if not exist "$(dir $@)" mkdir "$(dir $@)"
-    RMDIR  = rmdir /S /Q
 else
     UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
@@ -56,6 +57,9 @@ EXE_EXT :=
 ifeq ($(PLATFORM),WINDOWS)
     EXE_EXT := .exe
 endif
+ifeq ($(PLATFORM),WINDOWS_MSYS)
+    EXE_EXT := .exe
+endif
 
 TARGET := $(BUILD_DIR)/$(TARGET_NAME)$(EXE_EXT)
 
@@ -65,6 +69,10 @@ TARGET := $(BUILD_DIR)/$(TARGET_NAME)$(EXE_EXT)
 LDFLAGS := -L$(RAYLIB_LIB_DIR)
 
 ifeq ($(PLATFORM),WINDOWS)
+    LDLIBS := -lraylib -lopengl32 -lgdi32 -lwinmm
+    SUBSYSTEM := -Wl,-subsystem,windows
+endif
+ifeq ($(PLATFORM),WINDOWS_MSYS)
     LDLIBS := -lraylib -lopengl32 -lgdi32 -lwinmm
     SUBSYSTEM := -Wl,-subsystem,windows
 endif
@@ -86,15 +94,20 @@ endif
 all: assets $(TARGET)
 
 $(TARGET): $(OBJS)
-	@$(MKDIR)
 	$(CXX) $(OBJS) -o $@ $(LDFLAGS) $(LDLIBS) $(SUBSYSTEM)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-	@$(MKDIR)
+	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 run: $(TARGET)
+ifeq ($(PLATFORM),WINDOWS_MSYS)
+	@cmd //c start "" /D "$(BUILD_DIR)" "$(TARGET_NAME)$(EXE_EXT)"
+else ifeq ($(PLATFORM),WINDOWS)
+	@cd "$(BUILD_DIR)" && $(TARGET_NAME)$(EXE_EXT)
+else
 	@cd "$(BUILD_DIR)" && ./$(TARGET_NAME)$(EXE_EXT)
+endif
 
 clean:
 	-@$(RMDIR) "$(BUILD_DIR)"
@@ -104,7 +117,7 @@ clean:
 # ===========================
 ifeq ($(PLATFORM),WINDOWS)
 assets:
-	-@$(RMDIR) "$(ASSETS_DST)"
+	-@if exist "$(ASSETS_DST)" rmdir /S /Q "$(ASSETS_DST)"
 	@if not exist "$(BUILD_DIR)" mkdir "$(BUILD_DIR)"
 	@if not exist "$(ASSETS_DST)" mkdir "$(ASSETS_DST)"
 	@xcopy /E /I /Y "$(ASSETS_SRC)\*" "$(ASSETS_DST)\"

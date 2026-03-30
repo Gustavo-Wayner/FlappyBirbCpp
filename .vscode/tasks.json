@@ -10,22 +10,18 @@
                 "src/Objects.cpp",
                 "src/Structs.cpp",
                 "src/Static.cpp",
-                "icon.o",
                 "-o",
-                "game.exe",
+                "game",
+                "icon.o",
                 "-std=c++20",
-
                 "-Ithird_party/raylib/src",
                 "-Ithird_party/raylib/src/external",
                 "-Ithird_party",
-
                 "-Lthird_party/raylib/src",
                 "-lraylib",
-
                 "-lopengl32",
                 "-lgdi32",
                 "-lwinmm",
-
                 "-Wl,-subsystem,windows"
             ],
             "type": "process",
@@ -45,14 +41,19 @@
                 "-o",
                 "game",
                 "-std=c++20",
+                "-Wall",
+                "-Wextra",
+                "-O2",
 
                 "-Ithird_party/raylib/src",
                 "-Ithird_party/raylib/src/external",
                 "-Ithird_party",
 
-                "-Lthird_party/raylib/src",
+                "-Wno-missing-field-initializers",
+                "-Wno-unused-parameter",
 
-                "-lthird_party/raylib",
+                "-Lthird_party/raylib/src",
+                "-lraylib",
 
                 "-lGL",
                 "-lm",
@@ -63,7 +64,10 @@
             ],
             "type": "process",
             "problemMatcher": ["$gcc"],
-            "group": "build"
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
         },
         {
             "label": "osx compile (no-make)",
@@ -71,20 +75,25 @@
             "args": [
                 "src/main.cpp",
                 "src/Rooms.cpp",
-                "src/Rooms.cpp",
                 "src/Objects.cpp",
                 "src/Static.cpp",
                 "src/Structs.cpp",
                 "-o",
                 "game",
                 "-std=c++20",
+                "-Wall",
+                "-Wextra",
+                "-O2",
 
                 "-Ithird_party/raylib/src",
                 "-Ithird_party/raylib/src/external",
                 "-Ithird_party",
 
+                "-Wno-missing-field-initializers",
+                "-Wno-unused-parameter",
+
                 "-Lthird_party/raylib/src",
-                "-lthird_party/raylib",
+                "-lraylib",
 
                 "-framework", "OpenGL",
                 "-framework", "Cocoa",
@@ -93,7 +102,10 @@
             ],
             "type": "process",
             "problemMatcher": ["$gcc"],
-            "group": "build"
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
         },
         {
             "label": "windows build (make)",
@@ -110,7 +122,7 @@
                 "reveal": "always"
             },
             "group": {
-                "isDefault": false,
+                "isDefault": true,
                 "kind": "build"
             }
         },
