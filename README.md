@@ -50,6 +50,60 @@ You're a mac user? u already have make bro
 pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-make git
 ```
 
+---
+
+## 📚 Building libraylib.a from Source
+
+**Important:** This project includes raylib source code in `third_party/raylib/`, but the main Makefile does **not** build raylib automatically. You must build `libraylib.a` manually before building the project.
+
+### Method 1: Using Make (Recommended)
+
+The included raylib source has a Makefile - this is the recommended method since this project uses make.
+
+**Linux / macOS:**
+```bash
+cd third_party/raylib/src
+make PLATFORM=PLATFORM_DESKTOP
+```
+
+**Windows (MinGW):**
+```bash
+cd third_party/raylib/src
+mingw32-make PLATFORM=PLATFORM_DESKTOP
+```
+
+The `libraylib.a` static library will be created in `third_party/raylib/src/`.
+
+### Method 2: Using CMake (Alternative)
+
+If you prefer using CMake, raylib also supports building with it.
+
+Make sure you have CMake installed:
+- **Linux (Debian/Ubuntu):** `sudo apt install cmake`
+- **Arch Linux:** `sudo pacman -S cmake`
+- **macOS:** `brew install cmake`
+- **Windows (MSYS2):** `pacman -S mingw-w64-x86_64-cmake`
+
+**Linux / macOS:**
+```bash
+cd third_party/raylib
+mkdir build && cd build
+cmake .. -DBUILD_SHARED_LIBS=OFF -DSTATIC=ON
+make
+```
+
+**Windows (MinGW):**
+```bash
+cd third_party/raylib
+mkdir build && cd build
+cmake .. -G "MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF -DSTATIC=ON
+mingw32-make
+```
+
+The `libraylib.a` static library will be created in `third_party/raylib/build/`.
+
+---
+
 ## 🚀 Building and Running
 
 ### In the terminal
