@@ -37,6 +37,7 @@ ifeq ($(OS),Windows_NT)
         PLATFORM := WINDOWS_CMD
     endif
     PLATFORM := WINDOWS
+    SHELL = pwsh.exe -NoProfile -Command
     MKDIR  = if not exist "$(dir $@)" mkdir "$(dir $@)"
     RMDIR  = rmdir /S /Q
 else
@@ -93,7 +94,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 run: $(TARGET)
-	@cd "$(BUILD_DIR)" && "$(TARGET_NAME)$(EXE_EXT)"
+	@cd "$(BUILD_DIR)" && ./$(TARGET_NAME)$(EXE_EXT)
 
 clean:
 	-@$(RMDIR) "$(BUILD_DIR)"

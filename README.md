@@ -24,14 +24,14 @@ It is built from the repository source.
 
 ## 🛠️ Installing Build Tools
 
-### 🐧 Linux (Debian/Ubuntu)
+### 🐧 Linux (Debian/Ubuntu/Zorin)
 
 ```bash
 sudo apt update
 ```
 
 ```bash
-sudo apt install build-essential git libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libxcursor-dev mesa-utils
+sudo apt install build-essential git libx11-dev libxrandr-dev libxinerama-dev libxi-dev libgl1-mesa-dev libxcursor-dev mesa-utils
 ```
 
 ### 🐧 Arch Linux

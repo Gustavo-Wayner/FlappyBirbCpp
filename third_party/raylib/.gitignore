@@ -1,5 +1,6 @@
 # Ignore generated files
 # ...
+*.a
 
 # Ignore VIM's backup generated files
 *.swp
