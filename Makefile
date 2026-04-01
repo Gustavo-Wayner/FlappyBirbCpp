@@ -69,11 +69,11 @@ TARGET := $(BUILD_DIR)/$(TARGET_NAME)$(EXE_EXT)
 LDFLAGS := -L$(RAYLIB_LIB_DIR)
 
 ifeq ($(PLATFORM),WINDOWS)
-    LDLIBS := -lraylib -lopengl32 -lgdi32 -lwinmm
+    LDLIBS := -lraylib -lopengl32 -lgdi32 -lwinmm -static-libgcc -static-libstdc++
     SUBSYSTEM := -Wl,-subsystem,windows
 endif
 ifeq ($(PLATFORM),WINDOWS_MSYS)
-    LDLIBS := -lraylib -lopengl32 -lgdi32 -lwinmm
+    LDLIBS := -lraylib -lopengl32 -lgdi32 -lwinmm -static-libgcc -static-libstdc++
     SUBSYSTEM := -Wl,-subsystem,windows
 endif
 
@@ -102,7 +102,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 run: $(TARGET)
 ifeq ($(PLATFORM),WINDOWS_MSYS)
-	@cmd //c start "" /D "$(BUILD_DIR)" "$(TARGET_NAME)$(EXE_EXT)"
+	@cmd //c start "" "$(CURDIR)/$(TARGET)"
 else ifeq ($(PLATFORM),WINDOWS)
 	@cd "$(BUILD_DIR)" && $(TARGET_NAME)$(EXE_EXT)
 else

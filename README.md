@@ -39,13 +39,22 @@ sudo apt install build-essential git libx11-dev libxrandr-dev libxinerama-dev li
 sudo pacman -S base-devel libx11 libxrandr libxi libxcursor mesa
 ```
 
-### 🍎 MacOS (homebrew)
-You're a mac user? u already have make bro
+### 🍎 macOS
+
+Install Xcode Command Line Tools (provides clang, make, and other build tools):
+
+```bash
+xcode-select --install
+```
+
+Click "Install" when prompted. This may take a few minutes.
+
+**Note:** macOS has the required OpenGL and system frameworks (Cocoa, IOKit, CoreVideo) built-in, so no additional library installation is needed for raylib.
 
 ### 🪟 Windows (MSYS2 + MinGW)
 1 - Install MSYS2 → https://www.msys2.org/
 
-2 - Open MSYS2 UCRT64 or MSYS2 MINGW64 and run:
+2 - Open MSYS2 UCRT64, MSYS2 MINGW64 or your MSYS2 terminal of choice and run:
 ```bash
 pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-make git
 ```
